@@ -16,12 +16,12 @@ ENVS_DIR = CURRENT_DIR / "envs"
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
         env_prefix="SERVICE_APP__",
-        env_nested_delimiter="__",  # Разделитель для вложенности
+        env_nested_delimiter="__",
         env_file=ENVS_DIR / ".env",
         case_sensitive=False,
     )
     app: AppConfig = AppConfig()
-    db: DatabaseConfig = DatabaseConfig()
+    db: DatabaseConfig
 
     @classmethod
     def settings_customise_sources(

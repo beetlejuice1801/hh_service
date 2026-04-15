@@ -41,7 +41,6 @@ class Employer(BaseModel):
     name: str
     url: str | None = None
     alternate_url: str | None = None
-    trusted: bool
 
 
 class Area(BaseModel):
