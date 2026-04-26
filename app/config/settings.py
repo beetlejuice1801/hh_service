@@ -22,6 +22,7 @@ class Settings(BaseSettings):
     )
     app: AppConfig = AppConfig()
     db: DatabaseConfig
+    token: str = "my_token"
 
     @classmethod
     def settings_customise_sources(

@@ -1,9 +1,7 @@
 from models import Base
 
 
-def main():
-    # Base.metadata.create_all(engine)
-    ...
+def main(): ...
 
 
 if __name__ == "__main__":
