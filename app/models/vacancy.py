@@ -32,8 +32,6 @@ class Vacancy(Base):
     work_format: Mapped[str] = mapped_column(String)
     published_at: Mapped[datetime] = mapped_column(DateTime)
     raw_data: Mapped[dict] = mapped_column(JSONB)
-    requirements: Mapped[str] = mapped_column(String)
-    responsibility: Mapped[str] = mapped_column(String)
     first_seen_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         default=datetime.now,
@@ -44,4 +42,23 @@ class Vacancy(Base):
         onupdate=datetime.now,
     )
 
-    employer: Mapped["Employer"] = relationship(back_populates="vacancies")
+    employer: Mapped["Employer"] = relationship(
+        back_populates="vacancies",
+    )
+    skills: Mapped[list["VacancySkill"]] = relationship(
+        back_populates="vacancy",
+    )
+
+
+class VacancySkill(Base):
+    __tablename__ = "vacancy_skills"
+
+    id: Mapped[int] = mapped_column(
+        Integer,
+        primary_key=True,
+        autoincrement=True,
+    )
+    vacancy_id: Mapped[str] = mapped_column(ForeignKey("vacancies.id"))
+    skill_name: Mapped[str] = mapped_column(String, nullable=False)
+
+    vacancy: Mapped["Vacancy"] = relationship(back_populates="skills")
