@@ -1,5 +1,5 @@
 from typing import Literal
-from pydantic import BaseModel
+from pydantic import BaseModel, SecretStr
 from config.configure_logging import LoggingConfig
 
 
@@ -27,3 +27,5 @@ class AppConfig(BaseModel):
     ] = "development"
 
     logging: LoggingConfig = LoggingConfig()
+    client_id: SecretStr = str
+    client_secret: SecretStr = str

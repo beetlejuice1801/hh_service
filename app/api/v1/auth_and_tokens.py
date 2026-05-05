@@ -4,9 +4,14 @@ from requests import Request
 from fastapi.responses import RedirectResponse
 from config.settings import settings
 
-router = APIRouter()
+router = APIRouter(prefix="/login")
 
 
-@router.get("/auth")
-async def auth(request: Request):
+@router.get("/")
+async def auth():
+    pass
+
+
+@router.get("/refresh_token")
+async def refresh_token():
     pass
