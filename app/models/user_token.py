@@ -12,7 +12,7 @@ class UserToken(Base):
     user_id: Mapped[str] = mapped_column(String, nullable=False)
     access_token: Mapped[str] = mapped_column(String, nullable=False)
     refresh_token: Mapped[str] = mapped_column(String, nullable=False)
-    expires_at: Mapped[float] = mapped_column(DateTime(timezone=True))
+    expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=datetime.now()
     )

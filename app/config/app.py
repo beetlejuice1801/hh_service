@@ -29,3 +29,7 @@ class AppConfig(BaseModel):
     logging: LoggingConfig = LoggingConfig()
     client_id: SecretStr = str
     client_secret: SecretStr = str
+    redirect_uri: str = "http://localhost:8080/auth/callback"
+    user_agent: str = "hh-service/1.0 (longineslacatedral@gmail.com)"
+    current_user: str = "https://api.hh.ru/me"
+    get_token_url: str = "https://api.hh.ru/token"

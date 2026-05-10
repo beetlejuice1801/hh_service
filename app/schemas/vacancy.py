@@ -9,7 +9,7 @@ from pydantic import BaseModel, Field
 from datetime import datetime
 
 
-class Salary(BaseModel):
+class SalarySchema(BaseModel):
     """
     Схема для заработной платы.
 
@@ -28,7 +28,7 @@ class Salary(BaseModel):
     currency: str | None = None
 
 
-class Employer(BaseModel):
+class EmployerSchema(BaseModel):
     """
     Схема для работодателя.
 
@@ -43,7 +43,7 @@ class Employer(BaseModel):
     alternate_url: str | None = None
 
 
-class Area(BaseModel):
+class AreaSchema(BaseModel):
     """
     Территориальное расположение.
 
@@ -57,7 +57,7 @@ class Area(BaseModel):
     url: str | None = None
 
 
-class VacancyBrief(BaseModel):
+class VacancyBriefSchema(BaseModel):
     """
     Описание требований и обязанностей.
 
@@ -71,7 +71,7 @@ class VacancyBrief(BaseModel):
     responsibility: str | None
 
 
-class Experience(BaseModel):
+class ExperienceSchema(BaseModel):
     """
     Требуемый опыт.
 
@@ -84,13 +84,14 @@ class Experience(BaseModel):
     name: str | None = None
 
 
-class Vacancy(BaseModel):
+class VacancySchema(BaseModel):
     id: str
     name: str
-    area: Area
-    salary: Salary | None = None
-    vacancy_brief: VacancyBrief | None
-    experience: Experience | None = None
-    employer: Employer
+    area: AreaSchema
+    salary: SalarySchema | None = None
+    vacancy_brief: VacancyBriefSchema | None
+    experience: ExperienceSchema | None = None
+    employer: EmployerSchema
     published_at: datetime
     archived: bool | None = None
+    raw_data: dict

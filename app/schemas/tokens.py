@@ -6,3 +6,6 @@ class CodeResponse(BaseModel):
     expires_in: int
     refresh_token: SecretStr = str
     token_type: str = "bearer"
+
+
+
