@@ -57,7 +57,7 @@ class AreaSchema(BaseModel):
     url: str | None = None
 
 
-class VacancyBriefSchema(BaseModel):
+class SnippetSchema(BaseModel):
     """
     Описание требований и обязанностей.
 
@@ -89,9 +89,9 @@ class VacancySchema(BaseModel):
     name: str
     area: AreaSchema
     salary: SalarySchema | None = None
-    vacancy_brief: VacancyBriefSchema | None
+    snippet: SnippetSchema | None = None
     experience: ExperienceSchema | None = None
     employer: EmployerSchema
     published_at: datetime
     archived: bool | None = None
-    raw_data: dict
+    raw_data: dict | None = None

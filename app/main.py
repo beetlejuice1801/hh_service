@@ -1,5 +1,13 @@
+import logging
+
 import uvicorn
 from config.settings import settings
+
+logging.basicConfig(
+    level=settings.app.logging.level_name,
+    format=settings.app.logging.format,
+    datefmt=settings.app.logging.datefmt,
+)
 
 
 def main():

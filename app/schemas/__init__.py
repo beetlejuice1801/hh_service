@@ -2,7 +2,7 @@ __all__ = (
     "VacancySchema",
     "EmployerSchema",
     "CodeResponse",
-    "VacancyBriefSchema",
+    "SnippetSchema",
     "ExperienceSchema",
     "AreaSchema",
     "SalarySchema",
@@ -12,7 +12,7 @@ from schemas.tokens import CodeResponse
 from schemas.vacancy import (
     VacancySchema,
     ExperienceSchema,
-    VacancyBriefSchema,
+    SnippetSchema,
     AreaSchema,
     EmployerSchema,
     SalarySchema,

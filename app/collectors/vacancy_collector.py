@@ -1,22 +1,26 @@
+import logging
+
 import aiohttp
 import asyncio
 import random
 from repository import TokenRepository
 
+log = logging.getLogger(__name__)
 repository = TokenRepository()
 
 
 class HHVacancyCollector:
     url = "https://api.hh.ru/vacancies/"
 
-    def __init__(self, access_token):
+    def __init__(self, access_token, max_concurrency: int = 10):
         self.access_token = access_token
+        self.semaphore = asyncio.Semaphore(max_concurrency)
 
     async def __aenter__(self):
         self.session = aiohttp.ClientSession(
             headers={
-                "User-Agent": "hh-service/1.0 (longineslacatedral@gmail.com)",
                 "Authorization": f"Bearer {self.access_token}",
+                "User-Agent": "hh-service/1.0 (longineslacatedral@gmail.com)",
             },
         )
         return self
@@ -24,20 +28,30 @@ class HHVacancyCollector:
     async def __aexit__(self, exc_type, exc_val, exc_tb):
         await self.session.close()
 
+    async def fetch_page(self, params: dict, page) -> dict:
+        params["page"] = page
+        async with self.session.get(self.url, params=params) as response:
+            return await response.json()
+
+    async def fetch_page_safe(self, params: dict, page) -> dict:
+        async with self.semaphore:
+            await asyncio.sleep(random.uniform(0.5, 3))
+            return await self.fetch_page(params, page)
+
     async def fetch_vacancies(self, params: dict) -> list:
         all_vacancies = []
-        page = 0
-
-        while True:
-            params["page"] = page
-
-            async with self.session.get(self.url, params=params) as response:
-                response = await response.json()
-                all_vacancies.extend(response["items"])
-
-                if page >= response["pages"]:
-                    break
-                page += 1
-                await asyncio.sleep(random.uniform(1.0, 3.0))
-
+        fetch_page = await self.fetch_page(params, page=0)
+        total_pages = fetch_page["pages"]
+        tasks = [
+            self.fetch_page_safe(
+                params,
+                page=p,
+            )
+            for p in range(total_pages)
+        ]
+        results = await asyncio.gather(*tasks)
+        for result in results:
+            all_vacancies.extend(result["items"])
+        log.info("Количество собранных вакансий: %d", len(all_vacancies))
+        log.info(all_vacancies[0])
         return all_vacancies

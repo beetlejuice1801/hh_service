@@ -28,11 +28,22 @@ class VacancyRepository:
             id=vacancy_schema.id,
             employer_id=vacancy_schema.employer.id,
             name=vacancy_schema.name,
-            area=vacancy_schema.area,
-            salary_from=vacancy_schema.salary.from_,
-            salary_to=vacancy_schema.salary.to,
-            experience=vacancy_schema.experience,
-            work_format=vacancy_schema.work_format,
+            area=vacancy_schema.area.name,
+            salary_from=(
+                vacancy_schema.salary.from_ if vacancy_schema.salary else None
+            ),
+            salary_to=(vacancy_schema.salary.to if vacancy_schema.salary else None),
+            snippet_requirement=(
+                vacancy_schema.snippet.requirement if vacancy_schema.snippet else None
+            ),
+            snippet_responsibility=(
+                vacancy_schema.snippet.responsibility
+                if vacancy_schema.snippet
+                else None
+            ),
+            experience=(
+                vacancy_schema.experience.name if vacancy_schema.experience else None
+            ),
             published_at=vacancy_schema.published_at,
             raw_data=vacancy_schema.raw_data,
         )
@@ -44,7 +55,8 @@ class VacancyRepository:
                 "salary_from": vacancy_stmt.excluded.salary_from,
                 "salary_to": vacancy_stmt.excluded.salary_to,
                 "experience": vacancy_stmt.excluded.experience,
-                "work_format": vacancy_stmt.excluded.work_format,
+                "snippet_requirement": vacancy_stmt.excluded.snippet_requirement,
+                "snippet_responsibility": vacancy_stmt.excluded.snippet_responsibility,
                 "raw_data": vacancy_stmt.excluded.raw_data,
             },
         )

@@ -29,8 +29,11 @@ class Vacancy(Base):
     salary_from: Mapped[int | None] = mapped_column(Integer)
     salary_to: Mapped[int | None] = mapped_column(Integer)
     experience: Mapped[str] = mapped_column(String)
-    work_format: Mapped[str] = mapped_column(String)
-    published_at: Mapped[datetime] = mapped_column(DateTime)
+    snippet_requirement: Mapped[str] = mapped_column(String, nullable=True, default="")
+    snippet_responsibility: Mapped[str] = mapped_column(
+        String, nullable=True, default=""
+    )
+    published_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
     raw_data: Mapped[dict] = mapped_column(JSONB)
     first_seen_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),

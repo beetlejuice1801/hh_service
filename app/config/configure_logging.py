@@ -19,6 +19,7 @@ class LoggingConfig(BaseModel):
         "CRITICAL",
     ] = "INFO"
     format: str = LOGGING_FORMAT
+    datefmt: str = DATE_FORMAT
 
     @property
     def level(self) -> int:
