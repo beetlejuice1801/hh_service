@@ -6,6 +6,8 @@ __all__ = (
     "ExperienceSchema",
     "AreaSchema",
     "SalarySchema",
+    "VacancyResponse",
+    "StatsResponse",
 )
 
 from schemas.tokens import CodeResponse
@@ -16,4 +18,6 @@ from schemas.vacancy import (
     AreaSchema,
     EmployerSchema,
     SalarySchema,
+    VacancyResponse,
+    StatsResponse,
 )

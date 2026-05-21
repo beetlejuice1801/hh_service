@@ -5,7 +5,7 @@
 
 """
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 from datetime import datetime
 
 
@@ -95,3 +95,23 @@ class VacancySchema(BaseModel):
     published_at: datetime
     archived: bool | None = None
     raw_data: dict | None = None
+
+
+class VacancyResponse(BaseModel):
+    id: str
+    name: str
+    employer_id: str | None
+    area: str | None
+    salary_from: int | None
+    salary_to: int | None
+    experience: str | None
+    snippet_requirement: str | None
+    snippet_responsibility: str | None
+    published_at: datetime
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class StatsResponse(BaseModel):
+    median_salary: dict | None
+    frequency_distribution: dict | None

@@ -1,6 +1,6 @@
 import logging
 
-from fastapi import APIRouter, status, HTTPException
+from fastapi import APIRouter, HTTPException
 from sqlalchemy import URL
 import aiohttp
 from yarl import URL
@@ -8,6 +8,7 @@ from fastapi.responses import RedirectResponse
 from config.settings import settings
 from repository import TokenRepository
 from schemas.tokens import CodeResponse
+from models import UserToken
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
@@ -63,4 +64,16 @@ async def me():
 
 @router.get("/refresh_token")
 async def refresh_token():
-    pass
+    url = settings.app.get_token_url
+    params = {
+        "grant_type": "refresh_token",
+        "refresh_token": UserToken.refresh_token.get_secret_value(),
+    }
+    async with aiohttp.ClientSession(
+        headers={"User-Agent": settings.app.user_agent},
+    ) as session:
+        async with session.post(url=url, data=params) as response:
+            response_data = await response.json()
+            if "error" in response_data:
+                raise HTTPException(status_code=400, detail=response_data["error"])
+            token_data = CodeResponse(**response_data)
