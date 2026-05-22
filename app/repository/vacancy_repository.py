@@ -1,6 +1,5 @@
 from sqlalchemy import select, func
 from sqlalchemy.dialects.postgresql import insert
-from sqlalchemy.engine import row
 
 from schemas import VacancySchema, EmployerSchema
 from models import async_session, Vacancy, Employer

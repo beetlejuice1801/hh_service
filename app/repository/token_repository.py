@@ -48,24 +48,19 @@ class TokenRepository:
         token_schema: CodeResponse,
         user_id: str,
     ):
-        user_token = UserToken(
-            user_id=user_id,
-            access_token=token_schema.access_token.get_secret_value(),
-            refresh_token=token_schema.refresh_token.get_secret_value(),
-            expires_at=datetime.now()
-            + timedelta(
-                seconds=token_schema.expires_in,
-            ),
-        )
         async with async_session() as session:
-            stmt = update(user_token).where(UserToken.user_id == user_id).values(
-                user_id=user_id,
-                access_token=token_schema.access_token.get_secret_value(),
-                refresh_token=token_schema.refresh_token.get_secret_value(),
-                expires_at=datetime.now() + timedelta(
-                    seconds=token_schema.expires_in,
+            stmt = (
+                update(UserToken)
+                .where(UserToken.user_id == user_id)
+                .values(
+                    user_id=user_id,
+                    access_token=token_schema.access_token.get_secret_value(),
+                    refresh_token=token_schema.refresh_token.get_secret_value(),
+                    expires_at=datetime.now()
+                    + timedelta(
+                        seconds=token_schema.expires_in,
+                    ),
                 )
-
             )
             await session.execute(stmt)
             await session.commit()

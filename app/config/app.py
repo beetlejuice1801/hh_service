@@ -34,3 +34,4 @@ class AppConfig(BaseModel):
     user_agent: str = "hh-service/1.0 (longineslacatedral@gmail.com)"
     current_user: str = "https://api.hh.ru/me"
     get_token_url: str = "https://api.hh.ru/token"
+    url_for_fetch_vacancies: str = "https://api.hh.ru/vacancies"

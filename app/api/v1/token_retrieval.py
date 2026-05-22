@@ -1,5 +1,3 @@
-import logging
-
 from fastapi import APIRouter, HTTPException
 from sqlalchemy import URL
 import aiohttp
@@ -8,7 +6,6 @@ from fastapi.responses import RedirectResponse
 from config.settings import settings
 from repository import TokenRepository
 from schemas.tokens import CodeResponse
-from models import UserToken
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
@@ -54,20 +51,19 @@ async def callback(code: str):
             user_id = response_data["id"]
             repo = TokenRepository()
             await repo.save_token(token_data, user_id=user_id)
-    return RedirectResponse(url="http://localhost:8080/auth/me")
-
-
-@router.get("/me")
-async def me():
-    return {"message": "Успешно!"}
+    return {"message": "Токен успешно сохранён!"}
 
 
 @router.get("/refresh_token")
 async def refresh_token():
     url = settings.app.get_token_url
+    token = await TokenRepository.get_token(
+        user_id=settings.app.user_id.get_secret_value(),
+        token_type="refresh_token",
+    )
     params = {
         "grant_type": "refresh_token",
-        "refresh_token": UserToken.refresh_token.get_secret_value(),
+        "refresh_token": token,
     }
     async with aiohttp.ClientSession(
         headers={"User-Agent": settings.app.user_agent},
@@ -77,3 +73,9 @@ async def refresh_token():
             if "error" in response_data:
                 raise HTTPException(status_code=400, detail=response_data["error"])
             token_data = CodeResponse(**response_data)
+            repo = TokenRepository()
+            await repo.update_token(
+                token_data,
+                user_id=settings.app.user_id.get_secret_value(),
+            )
+            return {"message": "Токен успешно обновлён!"}

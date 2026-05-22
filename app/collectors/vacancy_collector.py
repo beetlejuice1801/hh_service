@@ -4,13 +4,14 @@ import aiohttp
 import asyncio
 import random
 from repository import TokenRepository
+from config.settings import settings
 
 log = logging.getLogger(__name__)
 repository = TokenRepository()
 
 
 class HHVacancyCollector:
-    url = "https://api.hh.ru/vacancies/"
+    url = settings.app.url_for_fetch_vacancies
 
     def __init__(self, access_token, max_concurrency: int = 10):
         self.access_token = access_token
@@ -20,7 +21,7 @@ class HHVacancyCollector:
         self.session = aiohttp.ClientSession(
             headers={
                 "Authorization": f"Bearer {self.access_token}",
-                "User-Agent": "hh-service/1.0 (longineslacatedral@gmail.com)",
+                "User-Agent": settings.app.user_agent,
             },
         )
         return self
@@ -41,6 +42,7 @@ class HHVacancyCollector:
     async def fetch_vacancies(self, params: dict) -> list:
         all_vacancies = []
         fetch_page = await self.fetch_page(params, page=0)
+        print(fetch_page)
         total_pages = fetch_page["pages"]
         tasks = [
             self.fetch_page_safe(
@@ -52,6 +54,4 @@ class HHVacancyCollector:
         results = await asyncio.gather(*tasks)
         for result in results:
             all_vacancies.extend(result["items"])
-        log.info("Количество собранных вакансий: %d", len(all_vacancies))
-        log.info(all_vacancies[0])
         return all_vacancies

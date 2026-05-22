@@ -1,13 +1,13 @@
 import logging
 
-from fastapi import APIRouter, status
+from fastapi import APIRouter
 from typing import Literal
 import asyncio
 
 from repository import TokenRepository, VacancyRepository
 from collectors import HHVacancyCollector
 from config.settings import settings
-from schemas import VacancySchema, VacancyResponse, StatsResponse
+from schemas import VacancySchema, VacancyResponse
 
 log = logging.getLogger(__name__)
 
@@ -21,6 +21,7 @@ async def collect_vacancies(text, area):
     collector = HHVacancyCollector(
         access_token=await token_repo.get_token(
             settings.app.user_id.get_secret_value(),
+            token_type="access_token",
         )
     )
     params = {
@@ -36,7 +37,7 @@ async def collect_vacancies(text, area):
                 vacancy_schema,
                 vacancy_schema.employer,
             )
-    return f"Вакансии успешно сохранены. {status.HTTP_200_OK}"
+    return {"message": "Вакансии успешно сохранены!"}
 
 
 @router.get("/sorted/", response_model=list[VacancyResponse])
@@ -84,7 +85,7 @@ async def get_vacancies_stats() -> dict:
     return result
 
 
-@router.get("/{id}/")
+@router.get("/{id}/", response_model=VacancyResponse)
 async def get_vacancy(id_: str) -> dict:
     vacancy_by_id = await VacancyRepository.get_vacancy_by_id(id_)
     return vacancy_by_id
