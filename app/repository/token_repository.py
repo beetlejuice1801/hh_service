@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 from typing import Literal
 from sqlalchemy import select, update
+from sqlalchemy.dialects.postgresql import insert
 from schemas.tokens import CodeResponse
 from models import async_session, UserToken
 from exceptions import NoTokenFound
@@ -15,7 +16,7 @@ class TokenRepository:
         token_schema: CodeResponse,
         user_id: str,
     ):
-        user_token = UserToken(
+        user_token_stmt = insert(UserToken).values(
             user_id=user_id,
             access_token=token_schema.access_token.get_secret_value(),
             refresh_token=token_schema.refresh_token.get_secret_value(),
@@ -24,9 +25,13 @@ class TokenRepository:
                 seconds=token_schema.expires_in,
             ),
         )
+        upsert_user_token_stmt = user_token_stmt.on_conflict_do_update(
+            index_elements=[UserToken.user_id],
+            set_={"user_id": user_token_stmt.excluded.user_id},
+        )
 
         async with async_session() as session:
-            session.add(user_token)
+            await session.execute(upsert_user_token_stmt)
             await session.commit()
 
     @staticmethod
