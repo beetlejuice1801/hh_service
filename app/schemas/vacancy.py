@@ -37,8 +37,8 @@ class EmployerSchema(BaseModel):
 
     """
 
-    id: str
-    name: str
+    id: str | None = None
+    name: str | None = None
     url: str | None = None
     alternate_url: str | None = None
 
@@ -85,6 +85,8 @@ class ExperienceSchema(BaseModel):
 
 
 class VacancySchema(BaseModel):
+    """Полная схема вакансии от API HeadHunter."""
+
     id: str
     name: str
     area: AreaSchema
@@ -98,6 +100,8 @@ class VacancySchema(BaseModel):
 
 
 class VacancyResponse(BaseModel):
+    """Схема ответа для выдачи вакансий пользователю (фильтрованная)."""
+
     id: str
     name: str
     employer_id: str | None
@@ -113,5 +117,7 @@ class VacancyResponse(BaseModel):
 
 
 class StatsResponse(BaseModel):
+    """Схема ответа со статистикой по вакансиям."""
+
     median_salary: dict | None
     frequency_distribution: dict | None

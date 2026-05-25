@@ -6,6 +6,8 @@ from models.base import Base
 
 
 class UserToken(Base):
+    """Модель для хранения токенов пользователя."""
+
     __tablename__ = "user_tokens"
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)

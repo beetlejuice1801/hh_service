@@ -3,6 +3,8 @@ from sqlalchemy import URL
 
 
 class PostgresConfig(BaseModel):
+    """Конфигурация подключения к PostgreSQL."""
+
     host: str
     port: int = 5432
     user: str
@@ -11,6 +13,8 @@ class PostgresConfig(BaseModel):
 
 
 class SqlaConfig(BaseModel):
+    """Конфигурация SQLAlchemy для работы с БД."""
+
     max_overflow: int = 10
     async_driver: str = "postgresql+asyncpg"
     driver: str = "postgresql+psycopg2"
@@ -19,11 +23,14 @@ class SqlaConfig(BaseModel):
 
 
 class DatabaseConfig(BaseModel):
+    """Общая конфигурация базы данных, объединяющая PostgresConfig и SqlaConfig."""
+
     postgres: PostgresConfig
     sqla: SqlaConfig = SqlaConfig()
 
     @property
     def async_url(self) -> URL:
+        """Формирует URL для асинхронного подключения к БД через asyncpg."""
         return URL.create(
             host=self.postgres.host,
             port=self.postgres.port,
@@ -35,6 +42,7 @@ class DatabaseConfig(BaseModel):
 
     @property
     def url(self) -> URL:
+        """Формирует URL для синхронного подключения к БД через psycopg2."""
         return URL.create(
             host=self.postgres.host,
             port=self.postgres.port,

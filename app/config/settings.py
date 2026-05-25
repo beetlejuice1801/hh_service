@@ -14,6 +14,11 @@ ENVS_DIR = CURRENT_DIR / "envs"
 
 
 class Settings(BaseSettings):
+    """
+    Главный класс настроек приложения.
+    Загружает конфигурацию из переменных окружения, .env файла и YAML.
+    """
+
     model_config = SettingsConfigDict(
         env_prefix="SERVICE_APP__",
         env_nested_delimiter="__",

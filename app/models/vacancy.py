@@ -20,6 +20,8 @@ if TYPE_CHECKING:
 
 
 class Vacancy(Base):
+    """Модель вакансии."""
+
     __tablename__ = "vacancies"
 
     id: Mapped[str] = mapped_column(String, primary_key=True)
@@ -48,20 +50,3 @@ class Vacancy(Base):
     employer: Mapped["Employer"] = relationship(
         back_populates="vacancies",
     )
-    skills: Mapped[list["VacancySkill"]] = relationship(
-        back_populates="vacancy",
-    )
-
-
-class VacancySkill(Base):
-    __tablename__ = "vacancy_skills"
-
-    id: Mapped[int] = mapped_column(
-        Integer,
-        primary_key=True,
-        autoincrement=True,
-    )
-    vacancy_id: Mapped[str] = mapped_column(ForeignKey("vacancies.id"))
-    skill_name: Mapped[str] = mapped_column(String, nullable=False)
-
-    vacancy: Mapped["Vacancy"] = relationship(back_populates="skills")

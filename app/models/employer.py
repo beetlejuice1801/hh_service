@@ -14,6 +14,8 @@ if TYPE_CHECKING:
 
 
 class Employer(Base):
+    """Модель работодателя."""
+
     __tablename__ = "employers"
 
     id: Mapped[str] = mapped_column(String, primary_key=True)

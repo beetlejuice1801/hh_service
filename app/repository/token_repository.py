@@ -8,6 +8,8 @@ from exceptions import NoTokenFound
 
 
 class TokenRepository:
+    """Репозиторий для работы с токенами пользователя в БД."""
+
     def __init__(self):
         pass
 
@@ -16,6 +18,7 @@ class TokenRepository:
         token_schema: CodeResponse,
         user_id: str,
     ):
+        """Сохраняет или обновляет токены пользователя (UPSERT)."""
         user_token_stmt = insert(UserToken).values(
             user_id=user_id,
             access_token=token_schema.access_token.get_secret_value(),
@@ -37,7 +40,8 @@ class TokenRepository:
     @staticmethod
     async def get_token(
         user_id: str, token_type: Literal["access_token", "refresh_token"]
-    ):
+    ) -> str:
+        """Получает токен пользователя по его ID и типу."""
         async with async_session() as session:
             stmt = select(UserToken).where(
                 UserToken.user_id == user_id,
@@ -52,7 +56,8 @@ class TokenRepository:
     async def update_token(
         token_schema: CodeResponse,
         user_id: str,
-    ):
+    ) -> None:
+        """Обновляет существующие токены пользователя."""
         async with async_session() as session:
             stmt = (
                 update(UserToken)

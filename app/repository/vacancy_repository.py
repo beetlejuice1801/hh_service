@@ -6,6 +6,8 @@ from models import async_session, Vacancy, Employer
 
 
 class VacancyRepository:
+    """Репозиторий для работы с вакансиями и работодателями в БД."""
+
     def __init__(self):
         pass
 
@@ -14,6 +16,7 @@ class VacancyRepository:
         vacancy_schema: VacancySchema,
         employer_schema: EmployerSchema,
     ):
+        """Обновляет или создаёт работодателя и вакансию (UPSERT)."""
         employer_stmt = insert(Employer).values(
             id=employer_schema.id,
             name=employer_schema.name,
@@ -77,6 +80,7 @@ class VacancyRepository:
         order_by: str = "published_at",
         order_direction: str = "desc",
     ):
+        """Получает список вакансий с фильтрацией и сортировкой."""
         async with async_session() as session:
             stmt = select(Vacancy)
             if salary_from:
@@ -99,6 +103,7 @@ class VacancyRepository:
 
     @staticmethod
     async def get_median_salary():
+        """Вычисляет медианную зарплату (50-й перцентиль)."""
         stmt = select(
             func.percentile_cont(0.5).within_group(
                 Vacancy.salary_from.asc(),
@@ -111,6 +116,7 @@ class VacancyRepository:
 
     @staticmethod
     async def frequency_distribution():
+        """Вычисляет распределение частот вакансий по опыту работы."""
         stmt = (
             select(Vacancy.experience, func.count().label("count"))
             .group_by(Vacancy.experience)
@@ -124,6 +130,7 @@ class VacancyRepository:
 
     @staticmethod
     async def get_vacancy_by_id(id_):
+        """Получает вакансию по её id."""
         stmt = select(Vacancy).where(Vacancy.id == id_)
         async with async_session() as session:
             result = await session.execute(stmt)
