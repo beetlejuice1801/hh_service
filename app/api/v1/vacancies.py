@@ -15,7 +15,7 @@ router = APIRouter(prefix="/vacancies", tags=["vacancies"])
 
 
 @router.get("/collect/")
-async def collect_vacancies(text, area) -> list[dict[str, any]]:
+async def collect_vacancies(text, area):
     """
     Эндпоинт для сбора вакансий с HeadHunter.
 
@@ -72,7 +72,7 @@ async def get_sorted_vacancies(
         "asc",
         "desc",
     ] = "desc",
-) -> list[VacancyResponse]:
+):
     """
     Эндпоинт для получения отфильтрованных и отсортированных вакансий из БД.
 
